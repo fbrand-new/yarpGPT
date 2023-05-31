@@ -6,21 +6,25 @@ from unittest.mock import MagicMock
 
 current_path = os.path.dirname(__file__)
 
-
-
 class APIInputTest(unittest.TestCase):
 
     def test_api_input(self):
+
+        #Initializing the yarp network and keeping it isolated from yarpserver
         yarp.Network.init()
-        # yarp.Network.setLocalMode(True)
+        yarp.Network.setLocalMode(True)
+
+        #Using fake context for test purpouses
         context = ""
-        port = yarp.BufferedPortBottle()
+
+        #Opening a port to check the output of the module
         out_port = yarp.BufferedPortBottle()
         out_port_name = "/yarpGPT/target:i"
         out_port.open(out_port_name)
-        # out_bottle = yarp.Bottle() 
 
-        fake_key = "fake_key"
+        port = yarp.BufferedPortBottle()
+
+
         callback = GPTCallback(fake_key,context)
 
         mock_answer = {
