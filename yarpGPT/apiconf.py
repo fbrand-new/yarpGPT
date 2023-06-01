@@ -5,7 +5,9 @@ class OpenAIConf:
 
     def __init__(self) -> None:
         try:
+            print("Building openai conf")
             openai.api_key = os.getenv("OPENAI_API_KEY")
+            print()
         except:
             print("Env variable OPENAI_API_KEY is not set. You must set it to use the api.")
 
