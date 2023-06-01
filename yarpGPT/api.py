@@ -61,14 +61,13 @@ class GPTCore():
             messages=messages
         )
 
-
         # response =  {
         #     'id' : '123',
         #     'choices' : [
         #         {
         #             'message' : {
         #                 'role' : 'assistant',
-        #                 'answer' : "I am dumb, I don't know how to answer" 
+        #                 'content' : "I am dumb, I don't know how to answer" 
         #             },
         #             'finish_reason' : 'stop',
         #             'index' : 0
@@ -76,10 +75,12 @@ class GPTCore():
         #     ]
         # }
 
+        print("Answered.")
+
         return response
 
     def create_response(self,response) -> yarp.Bottle:
-        answer = response['choices'][0]['message']['answer']
+        answer = response['choices'][0]['message']['content']
         self.assistant_messages.append(answer)
         bottle = yarp.Bottle()
         bottle.addString(answer)
