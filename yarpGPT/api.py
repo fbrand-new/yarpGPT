@@ -6,15 +6,14 @@ import itertools
 
 from apiconf import OpenAIConf, AzureConf
 
-class GPTCore():
-
+class Core():
+    
     def __init__(self,
                  system_message="",
                  user_messages=[],
-                 assistant_messages=[],
-                 model="gpt-3.5-turbo") -> None:
+                 assistant_messages=[]
+                 ) -> None:
         self.system_message = system_message
-        self.model = model
         self.user_messages = user_messages
         self.assistant_messages = assistant_messages
 
@@ -22,7 +21,7 @@ class GPTCore():
         
         messages = []
 
-        # We suppose that context is a single string
+        # Context is a single string
         if self.system_message:
             messages.append({"role": "system", "content": self.system_message})        
 
@@ -48,10 +47,47 @@ class GPTCore():
             if assistant_mex:
                 messages.append({"role":"assistant","content":assistant_mex})
 
-        print(messages)
-
         return messages
 
+    def create_response(self,response) -> yarp.Bottle:
+        answer = response['choices'][0]['message']['content']
+        self.assistant_messages.append(answer)
+        bottle = yarp.Bottle()
+        bottle.addString(answer)
+        return bottle
+
+class FakeCore(Core):
+
+    def answer(self,messages):
+
+        print("Answering...")
+
+        response =  {
+            'id' : '123',
+            'choices' : [
+                {
+                    'message' : {
+                        'role' : 'assistant',
+                        'content' : "The goo goo indeed mucks." 
+                    },
+                    'finish_reason' : 'stop',
+                    'index' : 0
+                }
+            ]
+        }
+
+        return response
+
+class GPTCore(Core):
+
+    def __init__(self,
+                 system_message="",
+                 user_messages=[],
+                 assistant_messages=[],
+                 model="gpt-3.5-turbo") -> None:
+        super().__init__(system_message,user_messages,assistant_messages)
+        self.model = model
+    
     def answer(self,messages):
 
         print("Answering ...")
@@ -61,30 +97,11 @@ class GPTCore():
             messages=messages
         )
 
-        # response =  {
-        #     'id' : '123',
-        #     'choices' : [
-        #         {
-        #             'message' : {
-        #                 'role' : 'assistant',
-        #                 'content' : "I am dumb, I don't know how to answer" 
-        #             },
-        #             'finish_reason' : 'stop',
-        #             'index' : 0
-        #         }
-        #     ]
-        # }
-
         print("Answered.")
 
         return response
 
-    def create_response(self,response) -> yarp.Bottle:
-        answer = response['choices'][0]['message']['content']
-        self.assistant_messages.append(answer)
-        bottle = yarp.Bottle()
-        bottle.addString(answer)
-        return bottle
+
 
 class yarpGPT(yarp.RFModule):
 
@@ -107,26 +124,40 @@ class yarpGPT(yarp.RFModule):
 
         self.api_conf = rf.find("apiconf").asString()
 
-        if self.api_conf == "OpenAI":
-            OpenAIConf()
-        if self.api_conf == "Azure":
-            AzureConf()
-
+        # RPC port used to gather prompt and return answer.
+        # This forces the client to wait for answer, so we avoid loop calls to API
         self.in_port = yarp.RpcServer()
         self.in_port.open("/yarpGPT/text:i")
 
-        if self.initial_prompt:
-            self.core = GPTCore(self.system_context,[self.initial_prompt])
+        #Dynamically select the class to use and load configuration
+        if self.api_conf == "OpenAI":
+            OpenAIConf()
+            core = GPTCore  
+        elif self.api_conf == "Azure":
+            AzureConf()
+            core = GPTCore
+        elif self.api_conf == "Fake":
+            core = FakeCore
         else:
-            self.core = GPTCore(self.system_context)
+            print("Selected api conf is invalid. Please use one of OpenAI, Azure, Fake")
+            self.cleanup()
+            sys.exit()
+
+        # Initialize the selected core of the app
+        if self.initial_prompt:
+            self.core = core(self.system_context,[self.initial_prompt])
+        else:
+            self.core = core(self.system_context)
 
         return True
     
     def updateModule(self):
 
         prompt = yarp.Bottle()
+
+        #Waits in the if until something gets actually written on the port
         if(self.in_port.read(prompt,True)):    
-            print(prompt.toString())
+
             #Format input, ask chat-gpt and format output
             messages = self.core.create_messages(prompt)
             api_answer = self.core.answer(messages)

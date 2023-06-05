@@ -1,0 +1,31 @@
+version: "3.7"
+
+x-yarpgpt: &yarpgpt
+  image: fbrand-new/yarpgpt:devel
+  environment:
+    - DISPLAY=${DISPLAY}
+    - QT_X11_NO_MITSHM=1
+    - XAUTHORITY=/root/.Xauthority
+    - YARP_DATA_DIRS=${YARP_DATA_DIRS}:/projects/yarp-devices-ros2/build/share/yarp/
+    - PYTH
+  volumes:
+    - "/tmp/.X11-unix:/tmp/.X11-unix"
+    - "${XAUTHORITY}:/root/.Xauthority"
+    - "${HOME}/.config/yarp:/root/.config/yarp"
+  network_mode: "host"
+  privileged: true
+
+services:
+  yarpserver:
+    <<: *yarpgpt
+    command: sh -c "yarpserver --silent"
+  yarpgpt:
+    <<: *yarpgpt
+    depends_on:
+      - yarpserver
+    command: sh -c "python3 yarpGPT/yarpGPT --from /yarpGPT/tests/conf/yarpGPT_integration_test.ini" 
+  yarpgpttest:
+    <<: *yarpgpt
+    depends_on: 
+      - yarpgpt
+    command: sh -c "cd /yarpGPT; yarp wait /yarpGPT/text:i; python3 -m unittest tests/integration/test_integration.py"
