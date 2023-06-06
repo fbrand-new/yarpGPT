@@ -7,7 +7,6 @@ x-yarpgpt: &yarpgpt
     - QT_X11_NO_MITSHM=1
     - XAUTHORITY=/root/.Xauthority
     - YARP_DATA_DIRS=${YARP_DATA_DIRS}:/projects/yarp-devices-ros2/build/share/yarp/
-    - PYTH
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix"
     - "${XAUTHORITY}:/root/.Xauthority"
@@ -23,7 +22,7 @@ services:
     <<: *yarpgpt
     depends_on:
       - yarpserver
-    command: sh -c "python3 yarpGPT/yarpGPT --from /yarpGPT/tests/conf/yarpGPT_integration_test.ini" 
+    command: sh -c "python3 -m yarpGPT --from /yarpGPT/tests/conf/yarpGPT_integration_test.ini" 
   yarpgpttest:
     <<: *yarpgpt
     depends_on: 

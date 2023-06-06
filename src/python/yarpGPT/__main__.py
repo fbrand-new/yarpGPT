@@ -1,7 +1,7 @@
 import sys
 import os
 import yarp
-from api import yarpGPT
+from yarpGPT.api import yarpGPT
 
 print("Hi and welcome to yarpGPT")
 yarp.Network.init()

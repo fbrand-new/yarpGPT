@@ -4,7 +4,7 @@ import sys
 import openai
 import itertools
 
-from apiconf import OpenAIConf, AzureConf
+from yarpGPT.apiconf import OpenAIConf, AzureConf
 
 class Core():
     

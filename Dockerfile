@@ -43,5 +43,5 @@ RUN apt install -y vim
 
 COPY . /yarpGPT
 
-ENV PYTHONPATH="/robotology/yarp/build/lib/python3:/yarpGPT"
+ENV PYTHONPATH="/robotology/yarp/build/lib/python3:/yarpGPT/src/python"
 
