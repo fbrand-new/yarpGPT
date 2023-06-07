@@ -1,0 +1,7 @@
+find_package(CURL CONFIG REQUIRED)
+add_executable(try try.cpp)
+target_include_directories(try PUBLIC "/liboai/liboai/include")
+target_link_libraries(try oai)
+target_link_libraries(try PRIVATE CURL::libcurl)
+link_directories("/liboai/liboai")
+install(TARGETS try DESTINATION bin)

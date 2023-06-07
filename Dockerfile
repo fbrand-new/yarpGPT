@@ -1,4 +1,5 @@
 FROM ubuntu:latest
+
 # Install yarp prerequisites
 RUN apt update && apt install -y cmake g++ wget unzip \
     build-essential git cmake cmake-curses-gui swig \
@@ -35,10 +36,26 @@ RUN cd /robotology && git clone https://github.com/robotology/yarp.git \
         -D YARP_COMPILE_BINDINGS=ON -D CREATE_PYTHON=ON .. \
 	&& make -j8 && make install
 
-# Install openai
+# Install python openai
 
 RUN pip install openai
 
+# Install openai c++ dependencies
+
+RUN apt update && apt install -y curl zip unzip tar
+
+RUN git clone https://github.com/Microsoft/vcpkg.git && \
+    cd vcpkg && ./bootstrap-vcpkg.sh -disableMetrics && \
+    ./vcpkg integrate install && ./vcpkg install curl[tool] && \
+    ./vcpkg install nlohmann-json
+
+# Install openai c++ community library
+RUN git clone https://github.com/D7EAD/liboai.git && \
+    cd liboai/liboai && \
+    cmake -B build -S . "-DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake" && \
+    cd build && make -j8 && make install
+
+# Install vim, I need vim, you do you, comment the following line if you dont need it
 RUN apt install -y vim
 
 COPY . /yarpGPT
