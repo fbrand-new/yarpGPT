@@ -101,8 +101,6 @@ class GPTCore(Core):
 
         return response
 
-
-
 class yarpGPT(yarp.RFModule):
 
     def configure(self,rf):

@@ -22,9 +22,9 @@ services:
     <<: *yarpgpt
     depends_on:
       - yarpserver
-    command: sh -c "python3 -m yarpGPT --from /yarpGPT/tests/conf/yarpGPT_integration_test.ini" 
+    command: sh -c "yarpGPT" 
   yarpgpttest:
     <<: *yarpgpt
-    depends_on: 
+    depends_on:
       - yarpgpt
-    command: sh -c "cd /yarpGPT; yarp wait /yarpGPT/text:i; python3 -m unittest tests/integration/test_integration.py"
+    command: sh -c "cd /yarpGPT/tests; yarp wait /yarpGPT/text:i; python3 -m unittest integration/integration.py"

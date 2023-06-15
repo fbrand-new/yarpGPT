@@ -2,12 +2,13 @@
 
 A basic yarp wrapper for OpenAI chatgpt apis.
 
-
 ## Testing
 
 ### Unit tests
 
+**Python Api** 
 
+Run `<path-to-yarpGPT>/run_unit_test.sh`. 
 
 ### Integration test
 

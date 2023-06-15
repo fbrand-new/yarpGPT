@@ -47,7 +47,8 @@ RUN apt update && apt install -y curl zip unzip tar
 RUN git clone https://github.com/Microsoft/vcpkg.git && \
     cd vcpkg && ./bootstrap-vcpkg.sh -disableMetrics && \
     ./vcpkg integrate install && ./vcpkg install curl[tool] && \
-    ./vcpkg install nlohmann-json
+    ./vcpkg install nlohmann-json && \
+    echo "ciao"
 
 # Install openai c++ community library
 RUN git clone https://github.com/D7EAD/liboai.git && \
@@ -58,7 +59,11 @@ RUN git clone https://github.com/D7EAD/liboai.git && \
 # Install vim, I need vim, you do you, comment the following line if you dont need it
 RUN apt install -y vim
 
+# Install yarpGPT
 COPY . /yarpGPT
+
+RUN cd /yarpGPT && cmake -B build -S . \
+    && cd build && make install && ldconfig
 
 ENV PYTHONPATH="/robotology/yarp/build/lib/python3:/yarpGPT/src/python"
 
