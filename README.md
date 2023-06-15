@@ -1,15 +1,23 @@
 # yarpGPT
 
-A basic yarp wrapper for OpenAI chatgpt apis.
+A basic yarp wrapper for Azure chatgpt apis.
 
-## Testing
+# Installation
 
-### Unit tests
+```sh
+git clone https://github.com/fbrand-new/yarpGPT.git
+cd yarpGPT
+./docker/build_docker.sh <my_img_name>
+```
 
-**Python Api** 
+# Usage
 
-Run `<path-to-yarpGPT>/run_unit_test.sh`. 
+Make sure you have a running `yarpserver`.
 
-### Integration test
+Via terminal, you can do
+```sh
+./docker/start_docker.sh <my_img_name>
+yarpGPT
+```
 
-Make sure you have an up-to-date image or build it using `docker/build_docker.sh`. Then run `docker compose -f docker/docker-compose-test.yml`. A passing test will yield an OK message at the end of the execution.
+This opens a rpcPort `/yarpGPT/text:i` which you can access for example via `yarp rpc /yarpGPT/text:i` and start writing a prompt. The service will call gpt apis and send you an answer.
