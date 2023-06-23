@@ -18,6 +18,7 @@
 #include <memory>
 #include <yarp/os/all.h>
 #include <liboai.h>
+
 class yarpGPT : public yarp::os::RFModule
 {
     private:

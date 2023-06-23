@@ -53,7 +53,8 @@ RUN git clone https://github.com/Microsoft/vcpkg.git && \
 # Install openai c++ community library
 RUN git clone https://github.com/D7EAD/liboai.git && \
     cd liboai/liboai && \
-    cmake -B build -S . "-DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake" && \
+    cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=true && \
     cd build && make -j8 && make install
 
 # Install vim, I need vim, you do you, comment the following line if you dont need it

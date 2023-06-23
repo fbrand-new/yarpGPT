@@ -89,7 +89,6 @@ bool yarpGPT::configure(yarp::os::ResourceFinder &rf)
 
 bool yarpGPT::updateModule()
 {
-
     yarp::os::Bottle prompt;
 
     if(inPort.read(prompt,true))
