@@ -113,6 +113,8 @@ bool yarpGPT::updateModule()
         answer.addString(convo.GetLastResponse());
         inPort.reply(answer);
     }
+
+    return true;
 }
 
 double yarpGPT::getPeriod()

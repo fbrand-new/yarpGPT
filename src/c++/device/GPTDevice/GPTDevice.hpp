@@ -7,7 +7,7 @@
 #ifndef YARP_GPTDevice_H
 #define YARP_GPTDevice_H
 
-#include "ILLM.hpp"
+#include <ILLM.hpp>
 #include <yarp/dev/DeviceDriver.h>
 #include <yarp/os/RpcServer.h>
 #include <yarp/os/LogStream.h>
@@ -16,8 +16,7 @@
 #include <liboai.h>
 
 class GPTDevice : public yarp::dev::ILLM,
-                  public yarp::dev::DeviceDriver,
-                  public yarp::os::PortReader
+                  public yarp::dev::DeviceDriver
 {
 public:
     GPTDevice() : ILLM(), m_convo{}
@@ -27,18 +26,16 @@ public:
     // Rpc methods
     void setPrompt(const std::string &prompt) override;
 
-    const std::string readPrompt() const override;
+    std::string readPrompt() override;
 
-    const std::string ask(const std::string &question) override;
+    std::string ask(const std::string &question) override;
 
-    const std::string getConversation() const override;
+    std::vector<std::pair<Author, Content>> getConversation() override;
 
     // Device initialization
     bool open(yarp::os::Searchable &config) override;
 
     bool close() override;
-
-    bool read(yarp::os::ConnectionReader &connection) override;
 
 private:
     // data
@@ -52,9 +49,6 @@ private:
 
     // model
     std::string m_model;
-
-    // Ports
-    yarp::os::Port m_rpcPort;
 };
 
 #endif

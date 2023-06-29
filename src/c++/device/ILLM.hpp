@@ -9,6 +9,11 @@
 
 #include <yarp/dev/api.h>
 #include <string>
+#include <vector>
+#include <map>
+
+typedef std::string Author;
+typedef std::string Content;
 
 namespace yarp::dev
 {
@@ -16,17 +21,18 @@ namespace yarp::dev
     class YARP_dev_API ILLM
     {
     public:
+
         ILLM() {}
 
         virtual ~ILLM() {}
 
         virtual void setPrompt(const std::string &prompt) = 0;
 
-        virtual const std::string readPrompt() const = 0;
+        virtual std::string readPrompt() = 0;
 
-        virtual const std::string ask(const std::string &question) = 0;
+        virtual std::string ask(const std::string &question) = 0;
 
-        virtual const std::string getConversation() const = 0;
+        virtual std::vector<std::pair<Author,Content>> getConversation() = 0;
 
     };
 
