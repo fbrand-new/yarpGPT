@@ -1,4 +1,5 @@
 #include "ConversationModel.h"
+#include <iostream>
 
 QVariant ConversationModel::data(const QModelIndex &index, int role) const
 {
@@ -37,8 +38,26 @@ void ConversationModel::addMessage(const Message &message)
 
 void ConversationModel::sendMessage(const QString &message)
 {
-    Message question = Message(QString::fromStdString("user"),message);
-    addMessage(question);
+
+    if (rowCount() == 0)
+    {
+        m_iLlm->setPrompt(message.toStdString());
+        addMessage(Message(QString::fromStdString("system"), message));
+    }
+    else
+    {
+        std::string answer = m_iLlm->ask(message.toStdString());
+        addMessage(Message(QString::fromStdString("user"),message));
+        addMessage(Message(QString::fromStdString("assistant"),QString::fromStdString(answer)));
+    }
+    
+}
+
+void ConversationModel::eraseMessage(const int &index)
+{
+    beginRemoveRows(QModelIndex(), index, index);
+    m_conversation.removeAt(index);
+    endRemoveRows();
 }
 
 // bool ConversationModel::setData(const QModelIndex &index, const QVariant &value, int role)

@@ -13,6 +13,7 @@ find_package(YARP 3.8.0 REQUIRED COMPONENTS os)
 find_package(CURL CONFIG REQUIRED)
 
 add_subdirectory(src)
+add_subdirectory(gui)
 
 file(GLOB conf ${CMAKE_CURRENT_SOURCE_DIR}/app/conf/yarpGPT.ini)
 

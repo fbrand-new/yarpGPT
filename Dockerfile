@@ -58,13 +58,13 @@ RUN git clone https://github.com/D7EAD/liboai.git && \
     cd build && make -j8 && make install
 
 # Install vim, I need vim, you do you, comment the following line if you dont need it
-RUN apt install -y vim
+RUN apt install -y vim qml-module-qtquick-controls2
 
 # Install yarpGPT
 COPY . /yarpGPT
 
 RUN cd /yarpGPT && cmake -B build -S . \
-    && cd build && make install && ldconfig
+    && cd build && make install -j8 && ldconfig
 
 ENV PYTHONPATH="/robotology/yarp/build/lib/python3:/yarpGPT/src/python"
 

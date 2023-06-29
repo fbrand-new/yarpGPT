@@ -1,5 +1,5 @@
 # Pick up our CMake scripts - they are all in the cmake subdirectory.
-set(YARP_MODULE_DIR "/usr/local/src/robotology/yarp/cmake")
+set(YARP_MODULE_DIR "/robotology/yarp/cmake")
 list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_DIR})
 
 # Find YCM
@@ -28,16 +28,6 @@ source_group(
 
 add_executable(gui WIN32)
 
-set(gui_UI_FILES
-mainwindow.ui)
-
-qt5_wrap_ui(gui_UI_GEN_SRCS ${gui_UI_FILES})
-
-source_group(
-  "UI files"
-  FILES ${gui_UI_FILES}
-)
-
 qtyarp_use_qml_plugin()
 
 target_sources(gui 
@@ -48,12 +38,13 @@ target_sources(gui
   main.qml
   ${gui_QRC_GEN_SRCS}
   )
-target_include_directories(gui PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(gui PRIVATE "${CMAKE_CURRENT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/../src/c++/device")
 
 target_link_libraries(gui
 PRIVATE
   YARP::YARP_os
   YARP::YARP_init
+  YARP::YARP_dev
   Qt5::Widgets
   Qt5::Gui
   Qt5::Qml

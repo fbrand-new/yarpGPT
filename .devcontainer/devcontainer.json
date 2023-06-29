@@ -9,5 +9,12 @@
 				"ms-vscode.cpptools-extension-pack"
 			]
         }
-    }
+    },
+    "runArgs": [
+        "--env=DISPLAY",
+        "--env=QT_X11_NO_MITSHM=1",
+        "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
+        "--volume=/run/user/1000/gdm/Xauthority:/root/.Xauthority",
+        "--volume=/etc/hosts:/etc/hosts"
+    ]
 }
