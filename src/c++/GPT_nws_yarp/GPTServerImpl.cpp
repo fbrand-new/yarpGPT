@@ -69,3 +69,14 @@ std::vector<yarp::dev::Message> IGPTRPCd::getConversation()
 
     return ret;
 }
+
+bool IGPTRPCd::deleteConversation()
+{
+    if(m_iLlm == nullptr)
+    {
+        yCError(GPTSERVER, "Invalid interface");
+    }
+
+    m_iLlm->deleteConversation();
+    return true;
+}

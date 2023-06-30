@@ -9,7 +9,7 @@
 
 void FakeGPTDevice::setPrompt(const std::string &prompt)
 {
-    m_conversation.push_back(std::make_pair("prompt",prompt));
+    m_conversation.push_back(std::make_pair("system",prompt));
 }
 
 std::string FakeGPTDevice::readPrompt()
@@ -37,4 +37,9 @@ std::string FakeGPTDevice::ask(const std::string &question)
 std::vector<std::pair<Author,Content>> FakeGPTDevice::getConversation() 
 {
     return m_conversation;
+}
+
+void FakeGPTDevice::deleteConversation() noexcept
+{
+    m_conversation.clear();
 }

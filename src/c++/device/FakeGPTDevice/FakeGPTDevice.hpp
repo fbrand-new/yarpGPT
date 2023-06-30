@@ -18,6 +18,7 @@ public:
     std::string readPrompt() override;
     std::string ask(const std::string &question) override;
     std::vector<std::pair<Author, Content>> getConversation() override;
+    void deleteConversation() noexcept override;
 
 private:
     std::vector<std::pair<Author, Content>> m_conversation;

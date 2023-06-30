@@ -19,7 +19,7 @@ class GPTDevice : public yarp::dev::ILLM,
                   public yarp::dev::DeviceDriver
 {
 public:
-    GPTDevice() : ILLM(), m_convo{}
+    GPTDevice() : ILLM(), m_convo{std::make_unique<liboai::Conversation>()}
     {
     }
 
@@ -32,6 +32,9 @@ public:
 
     std::vector<std::pair<Author, Content>> getConversation() override;
 
+    void deleteConversation() noexcept override;
+
+
     // Device initialization
     bool open(yarp::os::Searchable &config) override;
 
@@ -39,7 +42,7 @@ public:
 
 private:
     // data
-    liboai::Conversation m_convo;
+    std::unique_ptr<liboai::Conversation> m_convo;
 
     // configuration
     std::string azure_resource;

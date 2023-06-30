@@ -74,3 +74,8 @@ std::vector<std::pair<Author, Content>> GPT_nwc_yarp::getConversation()
 
     return conversation_out;
 }
+
+void GPT_nwc_yarp::deleteConversation()
+{
+    m_GPT_RPC.deleteConversation();
+}

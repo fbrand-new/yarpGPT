@@ -36,10 +36,10 @@ ApplicationWindow {
                 Rectangle {
                     id: messageBox
                     width: Math.min(messageText.implicitWidth + 24,
-                            listView.width - (!sentByUser ? erase.width + messageRow.spacing + listView.width/8 : 0))
+                            listView.width - (!sentByUser ? messageRow.spacing + listView.width/8 : 0))
                     height: messageText.implicitHeight + 24
                     color: isPrompt ? "green" : (sentByUser ? "lightgrey" : "steelblue")
-
+                    opacity : 0.8
                     Label {
                         id: messageText
                         anchors.centerIn: parent
@@ -51,40 +51,40 @@ ApplicationWindow {
                     }
                 }
 
-                Button {
-                    background: Rectangle {
-                        implicitWidth: 45
-                        implicitHeight: 45
-                        opacity: 0.3
-                        radius: 2
-                    }
-                    id: erase
-                    icon.source: "https://cdn3.iconfinder.com/data/icons/objects/512/Bin-512.png"
-                    opacity: hovered ? 0.6 : 0.3
+                // Button {
+                //     background: Rectangle {
+                //         implicitWidth: 45
+                //         implicitHeight: 45
+                //         opacity: 0.3
+                //         radius: 2
+                //     }
+                //     id: erase
+                //     icon.source: "https://cdn3.iconfinder.com/data/icons/objects/512/Bin-512.png"
+                //     opacity: hovered ? 0.6 : 0.3
 
-                    MouseArea {
-                        id: hoverArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        // Triggered when mouse enters the button
-                        onEntered: {
-                            // popupText.text = "Erase element";
-                            // popup.x = erase.x - popup.width;
-                            // popup.y = erase.y - popup.height;
-                            messageBox.opacity = 0.4;
-                            // popup.open();
-                        }
-                        // Triggered when mouse leaves the button
-                        onExited: {
-                            messageBox.opacity = 1;
-                            // popup.close();
-                        }
-                        onClicked: {
-                            console.log("Clicked");
-                            listView.model.eraseMessage(index);
-                        }
-                    }
-                }
+                //     MouseArea {
+                //         id: hoverArea
+                //         anchors.fill: parent
+                //         hoverEnabled: true
+                //         // Triggered when mouse enters the button
+                //         onEntered: {
+                //             // popupText.text = "Erase element";
+                //             // popup.x = erase.x - popup.width;
+                //             // popup.y = erase.y - popup.height;
+                //             messageBox.opacity = 0.4;
+                //             // popup.open();
+                //         }
+                //         // Triggered when mouse leaves the button
+                //         onExited: {
+                //             messageBox.opacity = 1;
+                //             // popup.close();
+                //         }
+                //         onClicked: {
+                //             console.log("Clicked");
+                //             listView.model.eraseMessage(index);
+                //         }
+                //     }
+                // }
             }
 
             ScrollBar.vertical: ScrollBar {}
@@ -120,6 +120,10 @@ ApplicationWindow {
                     popup.close();
                     listView.opacity = 1;
                 }
+
+                onClicked: {
+                    listView.model.deleteConversation();
+                }
             }
         }
 
@@ -135,6 +139,11 @@ ApplicationWindow {
                     Layout.fillWidth: true
                     placeholderText: qsTr("Compose message")
                     wrapMode: TextArea.Wrap
+                    Keys.onReturnPressed: {
+                        listView.model.sendMessage(messageField.text);
+                        messageField.text = "";
+                    }
+
                 }
 
                 Button {

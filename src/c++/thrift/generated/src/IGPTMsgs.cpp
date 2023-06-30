@@ -258,6 +258,64 @@ public:
     static constexpr const char* s_help{""};
 };
 
+// deleteConversation helper class declaration
+class IGPTMsgs_deleteConversation_helper :
+        public yarp::os::Portable
+{
+public:
+    IGPTMsgs_deleteConversation_helper() = default;
+    bool write(yarp::os::ConnectionWriter& connection) const override;
+    bool read(yarp::os::ConnectionReader& connection) override;
+
+    class Command :
+            public yarp::os::idl::WirePortable
+    {
+    public:
+        Command() = default;
+        ~Command() override = default;
+
+        bool write(yarp::os::ConnectionWriter& connection) const override;
+        bool read(yarp::os::ConnectionReader& connection) override;
+
+        bool write(const yarp::os::idl::WireWriter& writer) const override;
+        bool writeTag(const yarp::os::idl::WireWriter& writer) const;
+        bool writeArgs(const yarp::os::idl::WireWriter& writer) const;
+
+        bool read(yarp::os::idl::WireReader& reader) override;
+        bool readTag(yarp::os::idl::WireReader& reader);
+        bool readArgs(yarp::os::idl::WireReader& reader);
+    };
+
+    class Reply :
+            public yarp::os::idl::WirePortable
+    {
+    public:
+        Reply() = default;
+        ~Reply() override = default;
+
+        bool write(yarp::os::ConnectionWriter& connection) const override;
+        bool read(yarp::os::ConnectionReader& connection) override;
+
+        bool write(const yarp::os::idl::WireWriter& writer) const override;
+        bool read(yarp::os::idl::WireReader& reader) override;
+
+        bool return_helper{false};
+    };
+
+    using funcptr_t = bool (*)();
+    void call(IGPTMsgs* ptr);
+
+    Command cmd;
+    Reply reply;
+
+    static constexpr const char* s_tag{"deleteConversation"};
+    static constexpr size_t s_tag_len{1};
+    static constexpr size_t s_cmd_len{1};
+    static constexpr size_t s_reply_len{1};
+    static constexpr const char* s_prototype{"bool IGPTMsgs::deleteConversation()"};
+    static constexpr const char* s_help{""};
+};
+
 // setPrompt helper class implementation
 IGPTMsgs_setPrompt_helper::IGPTMsgs_setPrompt_helper(const std::string& prompt) :
         cmd{prompt}
@@ -858,6 +916,139 @@ void IGPTMsgs_getConversation_helper::call(IGPTMsgs* ptr)
     reply.return_helper = ptr->getConversation();
 }
 
+// deleteConversation helper class implementation
+bool IGPTMsgs_deleteConversation_helper::write(yarp::os::ConnectionWriter& connection) const
+{
+    return cmd.write(connection);
+}
+
+bool IGPTMsgs_deleteConversation_helper::read(yarp::os::ConnectionReader& connection)
+{
+    return reply.read(connection);
+}
+
+bool IGPTMsgs_deleteConversation_helper::Command::write(yarp::os::ConnectionWriter& connection) const
+{
+    yarp::os::idl::WireWriter writer(connection);
+    if (!writer.writeListHeader(s_cmd_len)) {
+        return false;
+    }
+    return write(writer);
+}
+
+bool IGPTMsgs_deleteConversation_helper::Command::read(yarp::os::ConnectionReader& connection)
+{
+    yarp::os::idl::WireReader reader(connection);
+    if (!reader.readListHeader()) {
+        reader.fail();
+        return false;
+    }
+    return read(reader);
+}
+
+bool IGPTMsgs_deleteConversation_helper::Command::write(const yarp::os::idl::WireWriter& writer) const
+{
+    if (!writeTag(writer)) {
+        return false;
+    }
+    if (!writeArgs(writer)) {
+        return false;
+    }
+    return true;
+}
+
+bool IGPTMsgs_deleteConversation_helper::Command::writeTag(const yarp::os::idl::WireWriter& writer) const
+{
+    if (!writer.writeTag(s_tag, 1, s_tag_len)) {
+        return false;
+    }
+    return true;
+}
+
+bool IGPTMsgs_deleteConversation_helper::Command::writeArgs(const yarp::os::idl::WireWriter& writer [[maybe_unused]]) const
+{
+    return true;
+}
+
+bool IGPTMsgs_deleteConversation_helper::Command::read(yarp::os::idl::WireReader& reader)
+{
+    if (!readTag(reader)) {
+        return false;
+    }
+    if (!readArgs(reader)) {
+        return false;
+    }
+    return true;
+}
+
+bool IGPTMsgs_deleteConversation_helper::Command::readTag(yarp::os::idl::WireReader& reader)
+{
+    std::string tag = reader.readTag(s_tag_len);
+    if (reader.isError()) {
+        return false;
+    }
+    if (tag != s_tag) {
+        reader.fail();
+        return false;
+    }
+    return true;
+}
+
+bool IGPTMsgs_deleteConversation_helper::Command::readArgs(yarp::os::idl::WireReader& reader)
+{
+    if (!reader.noMore()) {
+        reader.fail();
+        return false;
+    }
+    return true;
+}
+
+bool IGPTMsgs_deleteConversation_helper::Reply::write(yarp::os::ConnectionWriter& connection) const
+{
+    yarp::os::idl::WireWriter writer(connection);
+    return write(writer);
+}
+
+bool IGPTMsgs_deleteConversation_helper::Reply::read(yarp::os::ConnectionReader& connection)
+{
+    yarp::os::idl::WireReader reader(connection);
+    return read(reader);
+}
+
+bool IGPTMsgs_deleteConversation_helper::Reply::write(const yarp::os::idl::WireWriter& writer) const
+{
+    if (!writer.isNull()) {
+        if (!writer.writeListHeader(s_reply_len)) {
+            return false;
+        }
+        if (!writer.writeBool(return_helper)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool IGPTMsgs_deleteConversation_helper::Reply::read(yarp::os::idl::WireReader& reader)
+{
+    if (!reader.readListReturn()) {
+        return false;
+    }
+    if (reader.noMore()) {
+        reader.fail();
+        return false;
+    }
+    if (!reader.readBool(return_helper)) {
+        reader.fail();
+        return false;
+    }
+    return true;
+}
+
+void IGPTMsgs_deleteConversation_helper::call(IGPTMsgs* ptr)
+{
+    reply.return_helper = ptr->deleteConversation();
+}
+
 // Constructor
 IGPTMsgs::IGPTMsgs()
 {
@@ -904,6 +1095,16 @@ std::vector<Message> IGPTMsgs::getConversation()
     return ok ? helper.reply.return_helper : std::vector<Message>{};
 }
 
+bool IGPTMsgs::deleteConversation()
+{
+    if (!yarp().canWrite()) {
+        yError("Missing server method '%s'?", IGPTMsgs_deleteConversation_helper::s_prototype);
+    }
+    IGPTMsgs_deleteConversation_helper helper{};
+    bool ok = yarp().write(helper, helper);
+    return ok ? helper.reply.return_helper : bool{};
+}
+
 // help method
 std::vector<std::string> IGPTMsgs::help(const std::string& functionName)
 {
@@ -915,6 +1116,7 @@ std::vector<std::string> IGPTMsgs::help(const std::string& functionName)
         helpString.emplace_back(IGPTMsgs_readPrompt_helper::s_tag);
         helpString.emplace_back(IGPTMsgs_ask_helper::s_tag);
         helpString.emplace_back(IGPTMsgs_getConversation_helper::s_tag);
+        helpString.emplace_back(IGPTMsgs_deleteConversation_helper::s_tag);
         helpString.emplace_back("help");
     } else {
         if (functionName == IGPTMsgs_setPrompt_helper::s_tag) {
@@ -928,6 +1130,9 @@ std::vector<std::string> IGPTMsgs::help(const std::string& functionName)
         }
         if (functionName == IGPTMsgs_getConversation_helper::s_tag) {
             helpString.emplace_back(IGPTMsgs_getConversation_helper::s_prototype);
+        }
+        if (functionName == IGPTMsgs_deleteConversation_helper::s_tag) {
+            helpString.emplace_back(IGPTMsgs_deleteConversation_helper::s_prototype);
         }
         if (functionName == "help") {
             helpString.emplace_back("std::vector<std::string> help(const std::string& functionName = \"--all\")");
@@ -1008,6 +1213,21 @@ bool IGPTMsgs::read(yarp::os::ConnectionReader& connection)
         }
         if (tag == IGPTMsgs_getConversation_helper::s_tag) {
             IGPTMsgs_getConversation_helper helper;
+            if (!helper.cmd.readArgs(reader)) {
+                return false;
+            }
+
+            helper.call(this);
+
+            yarp::os::idl::WireWriter writer(reader);
+            if (!helper.reply.write(writer)) {
+                return false;
+            }
+            reader.accept();
+            return true;
+        }
+        if (tag == IGPTMsgs_deleteConversation_helper::s_tag) {
+            IGPTMsgs_deleteConversation_helper helper;
             if (!helper.cmd.readArgs(reader)) {
                 return false;
             }

@@ -21,7 +21,6 @@ namespace yarp::dev
     class YARP_dev_API ILLM
     {
     public:
-
         ILLM() {}
 
         virtual ~ILLM() {}
@@ -32,8 +31,9 @@ namespace yarp::dev
 
         virtual std::string ask(const std::string &question) = 0;
 
-        virtual std::vector<std::pair<Author,Content>> getConversation() = 0;
+        virtual std::vector<std::pair<Author, Content>> getConversation() = 0;
 
+        virtual void deleteConversation() = 0;
     };
 
 }

@@ -95,33 +95,33 @@ bool GPTDevice::open(yarp::os::Searchable &config)
 std::string GPTDevice::ask(const std::string &question)
 {
     // Adding prompt to conversation
-    m_convo.AddUserData(question);
+    m_convo->AddUserData(question);
 
     // Asking chat gpt for an answer
     try
     {
         liboai::Response res = oai.Azure->create_chat_completion(
             azure_resource, azure_deployment_id, azure_api_version,
-            m_convo);
-        m_convo.Update(res);
+            *m_convo);
+        m_convo->Update(res);
     }
     catch (const std::exception &e)
     {
         yError() << e.what() << '\n';
     }
 
-    return m_convo.GetLastResponse();
+    return m_convo->GetLastResponse();
 }
 
 void GPTDevice::setPrompt(const std::string &prompt)
 {
-    m_convo.PopSystemData();
-    m_convo.SetSystemData(prompt);
+    m_convo->PopSystemData();
+    m_convo->SetSystemData(prompt);
 }
 
 std::string GPTDevice::readPrompt()
 {
-    auto &convo_json = m_convo.GetJSON();
+    auto &convo_json = m_convo->GetJSON();
     for (auto &message : convo_json["messages"])
     {
         if (message["role"] == "system")
@@ -137,7 +137,7 @@ std::vector<std::pair<Author,Content>> GPTDevice::getConversation()
 {
     std::vector<std::pair<std::string, std::string>> conversation;
 
-    auto &convo_json = m_convo.GetJSON();
+    auto &convo_json = m_convo->GetJSON();
     for (auto &message : convo_json["messages"])
     {
         std::string role = message["role"].get<std::string>();
@@ -146,6 +146,12 @@ std::vector<std::pair<Author,Content>> GPTDevice::getConversation()
     }
 
     return conversation;
+}
+
+void GPTDevice::deleteConversation() noexcept
+{
+    //Api does not provide a method to empty the conversation: we are better of if we rebuild an object from scratch
+    m_convo.reset(new liboai::Conversation());
 }
 
 bool GPTDevice::close()

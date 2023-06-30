@@ -11,8 +11,9 @@ struct Message {
 }
 
 service IGPTMsgs {
-    bool setPrompt_rpc(1: string prompt);
-    string readPrompt_rpc();
-    string ask_rpc(1: string question);
-    list<Message> getConversation_rpc();
+    bool setPrompt(1: string prompt);
+    string readPrompt();
+    string ask(1: string question);
+    list<Message> getConversation();
+    bool deleteConversation();
 }

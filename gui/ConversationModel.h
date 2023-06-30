@@ -45,11 +45,13 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     void addMessage(const Message &message);
-    
-
+    void refreshConversation(); //Added so that we don't rely on keeping local data in sync.
+    void eraseConversation();
+     
     // bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     // Qt::ItemFlags flags(const QModelIndex &index) const override;
     
+    Q_INVOKABLE void deleteConversation(); //TODO: We have to come up with better names for this one
     Q_INVOKABLE void eraseMessage(const int &index);
     Q_INVOKABLE void sendMessage(const QString &message);
 protected:

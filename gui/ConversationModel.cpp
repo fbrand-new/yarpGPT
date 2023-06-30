@@ -3,6 +3,7 @@
 
 QVariant ConversationModel::data(const QModelIndex &index, int role) const
 {
+    std::cout << "Data is called" << std::endl;
     if (index.row() < 0 || index.row() >= m_conversation.count())
         return QVariant();
 
@@ -29,6 +30,45 @@ QHash<int, QByteArray> ConversationModel::roleNames() const
     return roles;
 }
 
+void ConversationModel::eraseConversation()
+{
+    beginRemoveRows(QModelIndex(), 0, rowCount());
+    m_conversation.clear();
+    endRemoveRows();
+}
+
+void ConversationModel::deleteConversation()
+{
+    m_iLlm->deleteConversation();
+    refreshConversation();
+}
+
+void ConversationModel::refreshConversation()
+{
+
+    this->eraseConversation();
+
+    std::cout << "conversation pre: " << std::endl;
+    for(size_t i=0; i<m_conversation.count(); ++i)
+    {
+        std::cout << "cont: " << m_conversation[i].content().toStdString() <<std::endl;
+    }
+
+    const auto &conversation = m_iLlm->getConversation();
+
+    for(const auto& [author,message]: conversation)
+    {
+        std::cout << "message: " << message << std::endl;
+        addMessage(Message(QString::fromStdString(author),QString::fromStdString(message)));
+    }
+
+    std::cout << "conversation post: " << std::endl;
+    for(size_t i=0; i<m_conversation.count(); ++i)
+    {
+        std::cout << "cont: " << m_conversation[i].content().toStdString() <<std::endl;
+    }
+}
+
 void ConversationModel::addMessage(const Message &message)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
@@ -42,14 +82,13 @@ void ConversationModel::sendMessage(const QString &message)
     if (rowCount() == 0)
     {
         m_iLlm->setPrompt(message.toStdString());
-        addMessage(Message(QString::fromStdString("system"), message));
     }
     else
     {
         std::string answer = m_iLlm->ask(message.toStdString());
-        addMessage(Message(QString::fromStdString("user"),message));
-        addMessage(Message(QString::fromStdString("assistant"),QString::fromStdString(answer)));
     }
+
+    this->refreshConversation();
     
 }
 

@@ -19,4 +19,5 @@ public:
     std::string readPrompt() override;
     std::string ask(const std::string &question) override;
     std::vector<yarp::dev::Message> getConversation() override;
+    bool deleteConversation() override;
 };
