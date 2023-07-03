@@ -6,7 +6,6 @@ x-yarpgpt: &yarpgpt
     - DISPLAY=${DISPLAY}
     - QT_X11_NO_MITSHM=1
     - XAUTHORITY=/root/.Xauthority
-    - YARP_DATA_DIRS=${YARP_DATA_DIRS}:/projects/yarp-devices-ros2/build/share/yarp/
   volumes:
     - "/tmp/.X11-unix:/tmp/.X11-unix"
     - "${XAUTHORITY}:/root/.Xauthority"
@@ -22,9 +21,9 @@ services:
     <<: *yarpgpt
     depends_on:
       - yarpserver
-    command: sh -c "yarpGPT" 
+    command: sh -c "yarprobotinterface --context yarpGPT --config fakeLLMDevice.xml" 
   yarpgpttest:
     <<: *yarpgpt
     depends_on:
       - yarpgpt
-    command: sh -c "cd /yarpGPT/tests; yarp wait /yarpGPT/text:i; python3 -m unittest integration/integration.py"
+    command: sh -c "cd /yarpGPT/tests; yarp wait /chat/rpc; python3 -m unittest integration/integration.py"

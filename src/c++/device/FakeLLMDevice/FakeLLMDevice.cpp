@@ -27,7 +27,7 @@ std::string FakeLLMDevice::readPrompt()
 std::string FakeLLMDevice::ask(const std::string &question)
 {
     //In the fake device we ignore the question
-    std::string answer = "Fatti non foste per viver come bruti \n ma per seguir virtute e canoscenza.";
+    std::string answer = "Fatti non foste per viver come bruti ma per seguir virtute e canoscenza";
     m_conversation.push_back(std::make_pair("user",question));
     m_conversation.push_back(std::make_pair("assistant",answer));
     return answer;
