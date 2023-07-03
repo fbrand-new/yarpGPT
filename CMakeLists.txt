@@ -15,6 +15,8 @@ find_package(CURL CONFIG REQUIRED)
 add_subdirectory(src)
 add_subdirectory(gui)
 
-file(GLOB conf ${CMAKE_CURRENT_SOURCE_DIR}/app/conf/yarpGPT.ini)
+file(GLOB fakeDevice ${CMAKE_CURRENT_SOURCE_DIR}/app/conf/fakeLLMDevice.xml)
+file(GLOB GPTDevice ${CMAKE_CURRENT_SOURCE_DIR}/app/conf/GPTDevice.xml)
 
-yarp_install(FILES ${conf} DESTINATION ${YARP_CONTEXTS_INSTALL_DIR}/yarpGPT)
+yarp_install(FILES ${fakeDevice} DESTINATION ${YARP_CONTEXTS_INSTALL_DIR}/yarpGPT)
+yarp_install(FILES ${GPTDevice} DESTINATION ${YARP_CONTEXTS_INSTALL_DIR}/yarpGPT)

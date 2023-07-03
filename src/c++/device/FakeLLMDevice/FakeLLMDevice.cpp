@@ -1,18 +1,17 @@
 /*
- * SPDX-FileCopyrightText: 2006-2023 Istituto Italiano di Tecnologia (IIT)
- * SPDX-FileCopyrightText: 2006-2010 RobotCub Consortium
+ * SPDX-FileCopyrightText: 2023-2023 Istituto Italiano di Tecnologia (IIT)
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
 
-#include <FakeGPTDevice.hpp>
+#include <FakeLLMDevice.hpp>
 
-void FakeGPTDevice::setPrompt(const std::string &prompt)
+void FakeLLMDevice::setPrompt(const std::string &prompt)
 {
     m_conversation.push_back(std::make_pair("system",prompt));
 }
 
-std::string FakeGPTDevice::readPrompt()
+std::string FakeLLMDevice::readPrompt()
 {
     for (const auto& [author, content]: m_conversation)
     {
@@ -25,7 +24,7 @@ std::string FakeGPTDevice::readPrompt()
     return "";
 }
 
-std::string FakeGPTDevice::ask(const std::string &question)
+std::string FakeLLMDevice::ask(const std::string &question)
 {
     //In the fake device we ignore the question
     std::string answer = "Fatti non foste per viver come bruti \n ma per seguir virtute e canoscenza.";
@@ -34,12 +33,12 @@ std::string FakeGPTDevice::ask(const std::string &question)
     return answer;
 }
 
-std::vector<std::pair<Author,Content>> FakeGPTDevice::getConversation() 
+std::vector<std::pair<Author,Content>> FakeLLMDevice::getConversation() 
 {
     return m_conversation;
 }
 
-void FakeGPTDevice::deleteConversation() noexcept
+void FakeLLMDevice::deleteConversation() noexcept
 {
     m_conversation.clear();
 }

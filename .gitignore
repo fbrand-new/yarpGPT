@@ -3,3 +3,4 @@ gptEnv
 .vscode
 **/__pycache__
 **/build
+playground/**

@@ -26,11 +26,11 @@ source_group(
   FILES ${gui_QRC_GEN_SRCS}
 )
 
-add_executable(gui WIN32)
+add_executable(yarpGPT WIN32)
 
 qtyarp_use_qml_plugin()
 
-target_sources(gui 
+target_sources(yarpGPT 
   PRIVATE 
   main.cpp 
   ConversationModel.cpp 
@@ -38,9 +38,9 @@ target_sources(gui
   main.qml
   ${gui_QRC_GEN_SRCS}
   )
-target_include_directories(gui PRIVATE "${CMAKE_CURRENT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/../src/c++/device")
+target_include_directories(yarpGPT PRIVATE "${CMAKE_CURRENT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/../src/c++/device")
 
-target_link_libraries(gui
+target_link_libraries(yarpGPT
 PRIVATE
   YARP::YARP_os
   YARP::YARP_init
@@ -50,3 +50,5 @@ PRIVATE
   Qt5::Qml
   Qt5::Quick
 )
+
+install(TARGETS yarpGPT DESTINATION bin)

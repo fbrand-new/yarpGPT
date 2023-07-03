@@ -2,7 +2,7 @@
 # All Rights Reserved.
 # Authors: Francesco Brand <francesco.brand@iit.it>
 
-# # SPDX-FileCopyrightText: 2006-2023 Istituto Italiano di Tecnologia (IIT)
+# # SPDX-FileCopyrightText: 2023-2023 Istituto Italiano di Tecnologia (IIT)
 # # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.12)
@@ -46,7 +46,6 @@ yarp_configure_plugins_installation(yarp-device-gpt)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES)
 
-add_subdirectory(module)
 add_subdirectory(device)
 add_subdirectory(thrift)
 add_subdirectory(GPT_nws_yarp)

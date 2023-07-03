@@ -1,3 +1,3 @@
 
 add_subdirectory(GPTDevice)
-add_subdirectory(FakeGPTDevice)
+add_subdirectory(FakeLLMDevice)
