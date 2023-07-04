@@ -26,9 +26,9 @@ public:
     bool close() override;
 
     //From ILLM
-    void setPrompt(const std::string& prompt) override;
-    std::string readPrompt() override;
-    std::string ask(const std::string& question) override;
-    std::vector<std::pair<Author,Content>> getConversation() override;
-    void deleteConversation() override;
+    bool setPrompt(const std::string& prompt) override;
+    bool readPrompt(std::string& oPrompt) override;
+    bool ask(const std::string& question, std::string& oAnswer) override;
+    bool getConversation(std::vector<std::pair<Author,Content>>& oConversation) override;
+    bool deleteConversation() override;
 };

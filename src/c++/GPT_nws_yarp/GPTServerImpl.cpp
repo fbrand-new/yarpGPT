@@ -8,8 +8,9 @@
 #include <yarp/os/LogStream.h>
 #include <yarp/os/Log.h>
 
-namespace {
-YARP_LOG_COMPONENT(GPTSERVER, "yarp.device.GPTServer")
+namespace
+{
+    YARP_LOG_COMPONENT(GPTSERVER, "yarp.device.GPTServer")
 }
 
 bool IGPTRPCd::setPrompt(const std::string &prompt)
@@ -24,47 +25,53 @@ bool IGPTRPCd::setPrompt(const std::string &prompt)
     return true;
 }
 
-std::string IGPTRPCd::readPrompt()
+yarp::dev::return_readPrompt IGPTRPCd::readPrompt()
 {
 
-    std::string ret;
+    yarp::dev::return_readPrompt ret;
 
     if (m_iLlm == nullptr)
     {
         yCError(GPTSERVER, "Invalid interface");
-        return ret;
+        ret.ret = false;
     }
-    ret = m_iLlm->readPrompt();
+
+    ret.ret = m_iLlm->readPrompt(ret.prompt);
+
     return ret;
 }
 
-std::string IGPTRPCd::ask(const std::string &question)
+yarp::dev::return_ask IGPTRPCd::ask(const std::string &question)
 {
-    std::string ret;
+    yarp::dev::return_ask ret;
+
     if (m_iLlm == nullptr)
     {
         yCError(GPTSERVER, "Invalid interface");
-        return ret;
+        ret.ret = false;
     }
-    ret = m_iLlm->ask(question);
+
+    ret.ret = m_iLlm->ask(question,ret.answer);
+
     return ret;
 }
 
-std::vector<yarp::dev::Message> IGPTRPCd::getConversation()
+yarp::dev::return_getConversation IGPTRPCd::getConversation()
 {
-    std::vector<yarp::dev::Message> ret;
+    yarp::dev::return_getConversation ret;
+
     if (m_iLlm == nullptr)
     {
         yCError(GPTSERVER, "Invalid interface");
-        return ret;
+        ret.ret = false;
     }
-    // TODO: here we actually realize that this is not doable like this. We should actually return a string.
-    // Actually this is not true, RPC should be able to handle this, after all if you can define it in thrift I expect some magic stuff to happen behind the curtains
-    const auto &conversation = m_iLlm->getConversation();
+    
+    std::vector<std::pair<Author,Content>> conversation;
+    ret.ret = m_iLlm->getConversation(conversation);
 
     for (const auto &[author, message] : conversation)
     {
-        ret.push_back(yarp::dev::Message(author, message));
+        ret.conversation.push_back(yarp::dev::Message(author, message));
     }
 
     return ret;
@@ -72,11 +79,10 @@ std::vector<yarp::dev::Message> IGPTRPCd::getConversation()
 
 bool IGPTRPCd::deleteConversation()
 {
-    if(m_iLlm == nullptr)
+    if (m_iLlm == nullptr)
     {
         yCError(GPTSERVER, "Invalid interface");
     }
 
-    m_iLlm->deleteConversation();
-    return true;
+    return m_iLlm->deleteConversation();
 }

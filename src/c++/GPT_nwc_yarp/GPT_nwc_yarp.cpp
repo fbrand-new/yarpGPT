@@ -38,7 +38,7 @@ bool GPT_nwc_yarp::open(yarp::os::Searchable &config)
         yCError(GPT_NWC_YARP, "Cannot attach the m_rpc_port_to_GPT_server port as client");
     }
 
-    yCDebug(GPT_NWC_YARP) << "Opening of nwc successful"; 
+    yCDebug(GPT_NWC_YARP) << "Opening of nwc successful";
     return true;
 }
 
@@ -48,34 +48,39 @@ bool GPT_nwc_yarp::close()
     return true;
 }
 
-void GPT_nwc_yarp::setPrompt(const std::string &prompt)
+bool GPT_nwc_yarp::setPrompt(const std::string &prompt)
 {
-    m_GPT_RPC.setPrompt(prompt);
+    return m_GPT_RPC.setPrompt(prompt);
 }
 
-std::string GPT_nwc_yarp::readPrompt()
+bool GPT_nwc_yarp::readPrompt(std::string &oPrompt)
 {
-    return m_GPT_RPC.readPrompt();
+    auto ret = m_GPT_RPC.readPrompt();
+
+    oPrompt = ret.prompt;
+    return ret.ret;
 }
 
-std::string GPT_nwc_yarp::ask(const std::string &question)
+bool GPT_nwc_yarp::ask(const std::string &question, std::string &oAnswer)
 {
-    return m_GPT_RPC.ask(question);
+    auto ret = m_GPT_RPC.ask(question);
+
+    oAnswer = ret.answer;
+    return ret.ret;
 }
 
-std::vector<std::pair<Author, Content>> GPT_nwc_yarp::getConversation()
+bool GPT_nwc_yarp::getConversation(std::vector<std::pair<Author, Content>> &oConversation)
 {
-    const auto &conversation = m_GPT_RPC.getConversation();
-    std::vector<std::pair<Author, Content>> conversation_out;
-    for (const auto &[author, message] : conversation)
+    auto ret = m_GPT_RPC.getConversation();
+    for (const auto &[author, message] : ret.conversation)
     {
-        conversation_out.push_back(std::make_pair(author, message));
+        oConversation.push_back(std::make_pair(author, message));
     }
 
-    return conversation_out;
+    return true;
 }
 
-void GPT_nwc_yarp::deleteConversation()
+bool GPT_nwc_yarp::deleteConversation()
 {
-    m_GPT_RPC.deleteConversation();
+    return m_GPT_RPC.deleteConversation();
 }

@@ -61,8 +61,6 @@ bool GPT_nws_yarp::close()
 
 bool GPT_nws_yarp::read(yarp::os::ConnectionReader &connection)
 {
-    yCDebug(GPT_NWS_YARP) << "I am about to read";
-
     bool b = m_RPC.read(connection);
     if (b)
     {

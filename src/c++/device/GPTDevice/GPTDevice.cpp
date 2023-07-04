@@ -22,77 +22,7 @@ bool GPTDevice::open(yarp::os::Searchable &config)
     return true;
 }
 
-// bool GPTDevice::read(yarp::os::ConnectionReader &connection)
-// {
-
-//     // Read the message from the input port
-//     yarp::os::Bottle command;
-//     yarp::os::Bottle reply;
-
-//     bool ok = command.read(connection);
-
-//     if (!ok)
-//     {
-//         return false;
-//     }
-
-//     if (command.get(0).asString() == "setPrompt")
-//     {
-//         std::string prompt = command.get(1).asString();
-//         if (prompt.size() > 0)
-//         {
-//             setPrompt(prompt);
-//             reply.addString("ack");
-//         }
-//         else
-//         {
-//             reply.addString("err");
-//         }
-//     }
-//     else if (command.get(0).asString() == "readPrompt")
-//     {
-//         reply.addString(readPrompt());
-//     }
-//     else if (command.get(0).asString() == "ask")
-//     {
-//         std::string question = command.get(1).asString();
-//         if (question.size() > 0)
-//         {
-//             const std::string &answer = ask(question);
-//             reply.addString(answer);
-//         }
-//         else
-//         {
-//             reply.addString("No question received");
-//         }
-//     }
-//     else if (command.get(0).asString() == "getConversation")
-//     {
-//         reply.addString(getConversation());
-//     }
-//     else if (command.get(0).asString() == "help")
-//     {
-//         reply.addString("Usage:");
-//         reply.addString("   setPrompt <prompt> ");
-//         reply.addString("   readPrompt");
-//         reply.addString("   ask <question>");
-//         reply.addString("   getConversation");
-//     }
-//     else
-//     {
-//         reply.addString("Unknown command. Use help to see available commands");
-//     }
-
-//     yarp::os::ConnectionWriter *returnToSender = connection.getWriter();
-//     if (returnToSender != nullptr)
-//     {
-//         reply.write(*returnToSender);
-//     }
-
-//     return true;
-// }
-
-std::string GPTDevice::ask(const std::string &question)
+bool GPTDevice::ask(const std::string &question, std::string &oAnswer)
 {
     // Adding prompt to conversation
     m_convo->AddUserData(question);
@@ -108,36 +38,57 @@ std::string GPTDevice::ask(const std::string &question)
     catch (const std::exception &e)
     {
         yError() << e.what() << '\n';
+        return false;
     }
 
-    return m_convo->GetLastResponse();
+    oAnswer = m_convo->GetLastResponse();
+    return true;
 }
 
-void GPTDevice::setPrompt(const std::string &prompt)
+bool GPTDevice::setPrompt(const std::string &prompt)
 {
-    m_convo->PopSystemData();
-    m_convo->SetSystemData(prompt);
+    try
+    {
+        m_convo->PopSystemData();
+        m_convo->SetSystemData(prompt);
+    }
+    catch (const std::exception& e){
+        yError() << e.what() << '\n';
+        return false;
+    }
+
+    return true;
 }
 
-std::string GPTDevice::readPrompt()
+bool GPTDevice::readPrompt(std::string& oPrompt)
 {
     auto &convo_json = m_convo->GetJSON();
     for (auto &message : convo_json["messages"])
     {
         if (message["role"] == "system")
-            return message["content"];
+        {
+            oPrompt = message["content"];
+            return true;
+        }
     }
 
     yWarning() << "No system message was found. Set it with setPrompt(string)";
 
-    return "";
+    return false;
 }
 
-std::vector<std::pair<Author,Content>> GPTDevice::getConversation()
+bool GPTDevice::getConversation(std::vector<std::pair<Author, Content>>& oConversation)
 {
     std::vector<std::pair<std::string, std::string>> conversation;
 
     auto &convo_json = m_convo->GetJSON();
+
+    if(convo_json.empty())
+    {
+        yWarning() << "Conversation is empty!";
+        return false;
+    }
+
     for (auto &message : convo_json["messages"])
     {
         std::string role = message["role"].get<std::string>();
@@ -145,13 +96,15 @@ std::vector<std::pair<Author,Content>> GPTDevice::getConversation()
         conversation.push_back(std::make_pair(role, content));
     }
 
-    return conversation;
+    oConversation = conversation;
+    return true;
 }
 
-void GPTDevice::deleteConversation() noexcept
+bool GPTDevice::deleteConversation() noexcept
 {
-    //Api does not provide a method to empty the conversation: we are better of if we rebuild an object from scratch
+    // Api does not provide a method to empty the conversation: we are better of if we rebuild an object from scratch
     m_convo.reset(new liboai::Conversation());
+    return false;
 }
 
 bool GPTDevice::close()

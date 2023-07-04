@@ -16,8 +16,8 @@ public:
     void setInterface(yarp::dev::ILLM *_iLlm) { m_iLlm = _iLlm; }
     // From IGPTMsgs
     bool setPrompt(const std::string &prompt) override;
-    std::string readPrompt() override;
-    std::string ask(const std::string &question) override;
-    std::vector<yarp::dev::Message> getConversation() override;
+    yarp::dev::return_readPrompt readPrompt() override;
+    yarp::dev::return_ask ask(const std::string &question) override;
+    yarp::dev::return_getConversation getConversation() override;
     bool deleteConversation() override;
 };

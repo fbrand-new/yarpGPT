@@ -23,16 +23,15 @@ public:
     }
 
     // Rpc methods
-    void setPrompt(const std::string &prompt) override;
+    bool setPrompt(const std::string &prompt) override;
 
-    std::string readPrompt() override;
+    bool readPrompt(std::string &oPrompt) override;
 
-    std::string ask(const std::string &question) override;
+    bool ask(const std::string &question, std::string &oAnswer) override;
 
-    std::vector<std::pair<Author, Content>> getConversation() override;
+    bool getConversation(std::vector<std::pair<Author, Content>> &oConversation) override;
 
-    void deleteConversation() noexcept override;
-
+    bool deleteConversation() noexcept override;
 
     // Device initialization
     bool open(yarp::os::Searchable &config) override;

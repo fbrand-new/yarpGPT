@@ -19,5 +19,7 @@ int main()
     poly.view(iLlm);
 
     iLlm->setPrompt("Ciao!");
-    std::cout << iLlm->readPrompt() << std::endl;
+    std::string oPrompt;
+    iLlm->readPrompt(oPrompt);
+    std::cout << oPrompt << std::endl;
 }

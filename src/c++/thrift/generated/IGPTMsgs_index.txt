@@ -1,4 +1,0 @@
-include/yarp/dev/Message.h
-src/Message.cpp
-include/yarp/dev/IGPTMsgs.h
-src/IGPTMsgs.cpp

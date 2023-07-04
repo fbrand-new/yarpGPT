@@ -24,15 +24,15 @@ namespace yarp::dev
 
         virtual ~ILLM() {}
 
-        virtual void setPrompt(const std::string &prompt) = 0;
+        virtual bool setPrompt(const std::string &prompt) = 0;
 
-        virtual std::string readPrompt() = 0;
+        virtual bool readPrompt(std::string &oPrompt) = 0;
 
-        virtual std::string ask(const std::string &question) = 0;
+        virtual bool ask(const std::string &question, std::string &answer) = 0;
 
-        virtual std::vector<std::pair<Author, Content>> getConversation() = 0;
+        virtual bool getConversation(std::vector<std::pair<Author, Content>> &conversation) = 0;
 
-        virtual void deleteConversation() = 0;
+        virtual bool deleteConversation() = 0;
     };
 
 }

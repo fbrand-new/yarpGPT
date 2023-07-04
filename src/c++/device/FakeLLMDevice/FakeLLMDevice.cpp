@@ -3,42 +3,45 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-
 #include <FakeLLMDevice.hpp>
 
-void FakeLLMDevice::setPrompt(const std::string &prompt)
+bool FakeLLMDevice::setPrompt(const std::string &prompt)
 {
-    m_conversation.push_back(std::make_pair("system",prompt));
+    m_conversation.push_back(std::make_pair("system", prompt));
 }
 
-std::string FakeLLMDevice::readPrompt()
+bool FakeLLMDevice::readPrompt(std::string &oPrompt)
 {
-    for (const auto& [author, content]: m_conversation)
+    for (const auto &[author, content] : m_conversation)
     {
-        if(author == "prompt")
+        if (author == "prompt")
         {
-            return content;
+            oPrompt = content;
+            return false;
         }
     }
 
-    return "";
+    return false;
 }
 
-std::string FakeLLMDevice::ask(const std::string &question)
+bool FakeLLMDevice::ask(const std::string &question, std::string &oAnswer)
 {
-    //In the fake device we ignore the question
+    // In the fake device we ignore the question
     std::string answer = "Fatti non foste per viver come bruti ma per seguir virtute e canoscenza";
-    m_conversation.push_back(std::make_pair("user",question));
-    m_conversation.push_back(std::make_pair("assistant",answer));
-    return answer;
+    m_conversation.push_back(std::make_pair("user", question));
+    m_conversation.push_back(std::make_pair("assistant", answer));
+    oAnswer = answer;
+    return true;
 }
 
-std::vector<std::pair<Author,Content>> FakeLLMDevice::getConversation() 
+bool FakeLLMDevice::getConversation(std::vector<std::pair<Author, Content>>& oConversation)
 {
-    return m_conversation;
+    oConversation = m_conversation;
+    return true;
 }
 
-void FakeLLMDevice::deleteConversation() noexcept
+bool FakeLLMDevice::deleteConversation() noexcept
 {
     m_conversation.clear();
+    return true;
 }
