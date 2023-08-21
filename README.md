@@ -1,3 +1,7 @@
+:triangular_flag_on_post: :triangular_flag_on_post:
+This project is archived since it has now been included in the robotology organization! Check https://github.com/robotology/yarp-devices-llm
+:triangular_flag_on_post: :triangular_flag_on_post:
+
 # yarpGPT
 
 A basic yarp wrapper for Azure chatgpt apis.
